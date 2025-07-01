@@ -6,6 +6,7 @@ import { Input } from '../components/ui/Input';
 import { FilePreview } from '../components/FilePreview';
 import { formatFileSize, getFileIcon } from '../lib/fileUtils';
 import { hashPassword } from '../lib/encryption';
+import { storage } from '../lib/storage';
 
 export const Download: React.FC = () => {
   const { code } = useParams<{ code: string }>();
@@ -30,11 +31,8 @@ export const Download: React.FC = () => {
       
       console.log('Looking for share with code:', shareCode);
       
-      // Get shares from localStorage
-      const existingShares = JSON.parse(localStorage.getItem('file_shares') || '[]');
-      console.log('All shares in localStorage:', existingShares);
-      
-      const shareData = existingShares.find((s: any) => s.code === shareCode);
+      // Get share from our storage system
+      const shareData = storage.getShare(shareCode);
       console.log('Found share:', shareData);
       
       if (!shareData) {
@@ -99,12 +97,8 @@ export const Download: React.FC = () => {
       link.click();
       document.body.removeChild(link);
 
-      // Update download count in localStorage
-      const existingShares = JSON.parse(localStorage.getItem('file_shares') || '[]');
-      const updatedShares = existingShares.map((s: any) => 
-        s.code === share.code ? { ...s, downloadCount: s.downloadCount + 1 } : s
-      );
-      localStorage.setItem('file_shares', JSON.stringify(updatedShares));
+      // Update download count
+      storage.updateShare(share.code, { downloadCount: share.downloadCount + 1 });
 
       // Update local state
       setShare((prev: any) => prev ? { ...prev, downloadCount: prev.downloadCount + 1 } : null);

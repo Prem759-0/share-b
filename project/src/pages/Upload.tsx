@@ -6,7 +6,7 @@ import { ShareResult } from '../components/ShareResult';
 import { FilePreview } from '../components/FilePreview';
 import { Button } from '../components/ui/Button';
 import { generateShareCode, hashPassword } from '../lib/encryption';
-import { supabase } from '../lib/supabase';
+import { storage } from '../lib/storage';
 import { FileShare } from '../types';
 
 interface UploadPageProps {}
@@ -67,13 +67,10 @@ export const Upload: React.FC<UploadPageProps> = () => {
         files: fileData
       };
 
-      // Always use localStorage for this demo
-      const existingShares = JSON.parse(localStorage.getItem('file_shares') || '[]');
-      existingShares.push(shareData);
-      localStorage.setItem('file_shares', JSON.stringify(existingShares));
+      // Save using our storage system
+      storage.saveShare(shareData);
       
-      console.log('Saved share to localStorage:', shareData);
-      console.log('All shares:', existingShares);
+      console.log('Saved share to storage:', shareData);
 
       // Create result for display
       const shareResultData: FileShare = {

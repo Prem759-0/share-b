@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Download, ArrowRight } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
+import { storage } from '../lib/storage';
 
 export const ReceiveCode: React.FC = () => {
   const [code, setCode] = useState('');
@@ -27,9 +28,8 @@ export const ReceiveCode: React.FC = () => {
       return;
     }
 
-    // Check if code exists in localStorage
-    const existingShares = JSON.parse(localStorage.getItem('file_shares') || '[]');
-    const shareExists = existingShares.find((s: any) => s.code === trimmedCode);
+    // Check if code exists
+    const shareExists = storage.getShare(trimmedCode);
     
     if (!shareExists) {
       setError('Code not found. Please check and try again.');
@@ -45,8 +45,8 @@ export const ReceiveCode: React.FC = () => {
     navigate(`/download/${trimmedCode}`);
   };
 
-  // Get available codes for debugging
-  const availableCodes = JSON.parse(localStorage.getItem('file_shares') || '[]')
+  // Get available codes for debugging (only in development)
+  const availableCodes = storage.getAllShares()
     .filter((s: any) => s.isActive && new Date(s.expiresAt) > new Date())
     .map((s: any) => s.code);
 
@@ -100,8 +100,8 @@ export const ReceiveCode: React.FC = () => {
           </p>
         </div>
 
-        {/* Debug info for development - only show if there are codes */}
-        {availableCodes.length > 0 && (
+        {/* Debug info for development - only show if there are codes and we're in development */}
+        {availableCodes.length > 0 && process.env.NODE_ENV === 'development' && (
           <div className="mt-4 p-3 bg-gray-50 rounded-lg">
             <p className="text-xs text-gray-500 text-center mb-1">
               Available codes for testing:
