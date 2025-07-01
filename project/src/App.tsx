@@ -19,6 +19,7 @@ function App() {
           <Route path="/" element={<Upload />} />
           <Route path="/receive" element={<ReceiveCode />} />
           <Route path="/download/:code" element={<Download />} />
+          <Route path="/share/:code" element={<Download />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

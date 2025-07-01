@@ -34,6 +34,7 @@ export const Upload: React.FC<UploadPageProps> = () => {
       const expiresAt = new Date(Date.now() + expirationHours * 60 * 60 * 1000).toISOString();
 
       console.log('Generated share code:', shareCode);
+      console.log('Files to upload:', files.length);
 
       // Convert files to base64 for storage
       const fileData = await Promise.all(
@@ -54,6 +55,8 @@ export const Upload: React.FC<UploadPageProps> = () => {
         })
       );
 
+      console.log('Files converted to base64');
+
       // Create share record
       const shareData = {
         id: shareId,
@@ -70,7 +73,8 @@ export const Upload: React.FC<UploadPageProps> = () => {
       // Save using our storage system
       storage.saveShare(shareData);
       
-      console.log('Saved share to storage:', shareData);
+      console.log('Saved share to storage:', shareData.code);
+      console.log('Storage info:', storage.getStorageInfo());
 
       // Create result for display
       const shareResultData: FileShare = {
@@ -174,6 +178,16 @@ export const Upload: React.FC<UploadPageProps> = () => {
             )}
           </div>
         </div>
+
+        {/* Debug info for development */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="mt-4 p-4 bg-white rounded-lg shadow">
+            <h3 className="font-bold mb-2">Debug Info:</h3>
+            <pre className="text-xs bg-gray-100 p-2 rounded">
+              {JSON.stringify(storage.getStorageInfo(), null, 2)}
+            </pre>
+          </div>
+        )}
 
         {/* File Preview Modal */}
         {previewFile && (
