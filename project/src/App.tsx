@@ -1,22 +1,27 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Toaster } from './components/ui/Toaster';
-import HomePage from './pages/HomePage';
-import SharePage from './pages/SharePage';
-import ReceivePage from './pages/ReceivePage';
-import NotFound from './pages/NotFound';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Header } from './components/Header';
+import { Upload } from './pages/Upload';
+import { Download } from './pages/Download';
+import { ReceiveCode } from './pages/ReceiveCode';
 
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <Router
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true
+      }}
+    >
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
+        <Header />
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/share/:code" element={<SharePage />} />
-          <Route path="/receive" element={<ReceivePage />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path="/" element={<Upload />} />
+          <Route path="/receive" element={<ReceiveCode />} />
+          <Route path="/download/:code" element={<Download />} />
+          <Route path="/share/:code" element={<Download />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-        <Toaster />
       </div>
     </Router>
   );

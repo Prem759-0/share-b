@@ -1,27 +1,27 @@
-export interface FileData {
-  code: string;
-  filename: string;
-  url: string;
-  expiresAt: string;
-  hasPassword?: boolean;
-}
-
-export interface FileMetadata {
+export interface FileShare {
   id: string;
   code: string;
-  originalName: string;
-  filename: string;
-  size: number;
-  mimeType: string;
-  uploadedAt: string;
+  files: SharedFile[];
+  password?: string;
   expiresAt: string;
-  hasPassword: boolean;
+  createdAt: string;
   downloadCount: number;
   maxDownloads?: number;
+  isActive: boolean;
 }
 
-export interface UploadOptions {
-  password?: string;
-  expirationHours?: number;
-  maxDownloads?: number;
+export interface SharedFile {
+  id: string;
+  name: string;
+  size: number;
+  type: string;
+  url: string;
+  preview?: string;
+}
+
+export interface UploadProgress {
+  fileId: string;
+  fileName: string;
+  progress: number;
+  status: 'uploading' | 'completed' | 'error';
 }

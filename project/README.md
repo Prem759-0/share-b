@@ -1,103 +1,109 @@
-# BoltAI - Secure File Sharing Platform
+# ShareAnywhere - File Sharing System
 
-A modern, secure file-sharing application built with React, TypeScript, and Vercel serverless functions. Share files up to 2GB with unique 6-digit codes, password protection, and automatic expiration.
+A secure file sharing system that allows users to upload files and share them via unique codes or links.
 
 ## Features
 
-- **Easy File Upload**: Drag-and-drop interface supporting all file types up to 2GB
-- **Secure Sharing**: Generate unique 6-digit codes with optional password protection
-- **Fast Access**: Recipients can download files instantly using the share code
-- **End-to-End Security**: Files are encrypted and automatically deleted after expiration
-- **AI-Powered**: Smart file handling with natural language processing support
-- **Global CDN**: Fast worldwide access through Vercel's edge network
+- **Easy File Upload**: Drag-and-drop or file picker interface
+- **Secure Sharing**: Generate unique 6-digit codes for file access
+- **Password Protection**: Optional password protection for shared files
+- **Time-Limited Shares**: Set expiration times (1 hour to 7 days)
+- **Download Limits**: Control maximum number of downloads
+- **File Previews**: Preview code files with syntax highlighting
+- **Cross-Platform**: Works on web, mobile, and desktop browsers
 
-## Tech Stack
+## Deployment on Vercel
 
-- **Frontend**: React 18, TypeScript, Tailwind CSS
-- **Backend**: Vercel Serverless Functions (Node.js)
-- **Database**: Vercel Postgres
-- **Storage**: Vercel Blob Storage
-- **Deployment**: Vercel
+This project is optimized for deployment on Vercel. Follow these steps:
 
-## Getting Started
+### 1. Prepare Your Project
 
-### Prerequisites
+Make sure all files are committed to your Git repository.
 
-- Node.js 18+ 
-- Vercel CLI
-- Vercel account with Postgres and Blob storage enabled
+### 2. Deploy to Vercel
 
-### Local Development
+1. Go to [vercel.com](https://vercel.com) and sign up/login
+2. Click "New Project"
+3. Import your Git repository
+4. Vercel will automatically detect it's a Vite project
+5. Click "Deploy"
 
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+### 3. Configuration
 
-3. Set up environment variables in `.env.local`:
-   ```env
-   POSTGRES_URL=your_postgres_connection_string
-   BLOB_READ_WRITE_TOKEN=your_blob_token
-   ```
+The project includes a `vercel.json` file that:
+- Handles client-side routing (SPA)
+- Sets security headers
+- Optimizes for static file serving
 
-4. Run the development server:
-   ```bash
-   npm run dev
-   ```
+### 4. Environment Variables (Optional)
 
-5. Open [http://localhost:5173](http://localhost:5173) in your browser
+If you want to use Supabase for persistent storage:
+1. Go to your Vercel project dashboard
+2. Navigate to Settings > Environment Variables
+3. Add:
+   - `VITE_SUPABASE_URL`: Your Supabase project URL
+   - `VITE_SUPABASE_ANON_KEY`: Your Supabase anonymous key
 
-### Database Setup
+### 5. Custom Domain (Optional)
 
-Run the SQL schema to create the required tables:
+1. Go to Settings > Domains in your Vercel dashboard
+2. Add your custom domain
+3. Follow Vercel's instructions to configure DNS
 
-```sql
--- See schema.sql for complete setup
+## Local Development
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
 ```
 
-## Deployment
+## How It Works
 
-1. Install Vercel CLI:
-   ```bash
-   npm i -g vercel
-   ```
+### Storage System
 
-2. Deploy to Vercel:
-   ```bash
-   vercel --prod
-   ```
+The app uses a hybrid storage approach:
+- **Local Development**: Uses localStorage for immediate testing
+- **Production**: Uses in-memory storage (resets on server restart)
+- **Optional**: Can be configured to use Supabase for persistent storage
 
-3. Set up environment variables in Vercel dashboard:
-   - `POSTGRES_URL`: Your Vercel Postgres connection string
-   - `BLOB_READ_WRITE_TOKEN`: Your Vercel Blob storage token
+### File Handling
 
-## API Endpoints
+1. Files are converted to base64 for storage
+2. Share codes are generated using secure random characters
+3. Files are bundled with metadata in a single share record
+4. Downloads are tracked and limited based on settings
 
-- `POST /api/upload` - Upload a file
-- `GET /api/files/[code]` - Get file metadata
-- `POST /api/files/[code]` - Verify password and get file metadata
-- `POST /api/download/[code]` - Download a file
-- `POST /api/cleanup` - Clean up expired files (cron job)
+### Security Features
 
-## File Limits & Security
+- Password hashing using SHA-256
+- Time-based expiration
+- Download count limits
+- Secure code generation
+- XSS and CSRF protection headers
 
-- **Free Tier**: 2GB max file size per upload
-- **Storage**: Files automatically deleted after expiration (default 7 days)
-- **Security**: End-to-end encryption, password protection, download limits
-- **Privacy**: No file content analysis, GDPR compliant
+## Limitations
 
-## Contributing
+- **File Size**: Limited by browser memory (recommended max 50MB per file)
+- **Storage**: In-memory storage resets on server restart
+- **Concurrent Users**: Limited by server memory
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
+## Upgrading to Persistent Storage
 
-## License
-
-MIT License - see LICENSE file for details
+For production use with persistent storage, consider:
+1. Setting up Supabase (recommended)
+2. Using a proper database (PostgreSQL, MongoDB)
+3. Implementing file storage (AWS S3, Cloudinary)
+4. Adding user authentication
 
 ## Support
 
-For premium features and increased limits, visit: https://x.ai/grok
+For issues or questions, please check the documentation or create an issue in the repository.
